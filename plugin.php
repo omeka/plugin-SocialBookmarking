@@ -10,7 +10,7 @@ add_plugin_hook('public_append_to_items_show', 'social_bookmarking_append_to_ite
 
 function social_bookmarking_install() 
 {
-	$social_bookmarking_services = array(
+	$socialBookmarkingServices = array(
 	'delicious' 		=> 	true,
 	'digg' 				=> 	true,
 	'furl' 				=> 	true,
@@ -69,12 +69,11 @@ function social_bookmarking_install()
 	'ziczac'			=>	false,
 	'plim'				=>	false,
 	'technotizie'		=>	false,
-	'diggitsport'		=>	false,
-	'sbr'				=>	false
+	'diggitsport'		=>	false
 	);
 	
 	set_option('social_bookmarking_version', SOCIAL_BOOKMARKING_VERSION);
-	set_option('social_bookmarking_services', serialize($social_bookmarking_services));	
+	set_option('social_bookmarking_services', serialize($socialBookmarkingServices));	
 }
 
 function social_bookmarking_uninstall()
@@ -85,14 +84,13 @@ function social_bookmarking_uninstall()
 
 function social_bookmarking_config() 
 {
-	$social_bookmarking_services = social_bookmarking_get_services();
+	$socialBookmarkingServices = social_bookmarking_get_services();
 	
 	unset($_POST['install_plugin']);
 		
 	$foo = serialize($_POST);
 	
 	set_option('social_bookmarking_services', $foo);
-
 }
 
 function social_bookmarking_config_form() 
@@ -105,17 +103,17 @@ function social_bookmarking_append_to_item()
     $item = get_current_item();
     
 echo '<h2>Social Bookmarking</h2>';
-$social_bookmarking_services = social_bookmarking_get_services();
-	foreach($social_bookmarking_services as $service => $value) {
+$socialBookmarkingServices = social_bookmarking_get_services();
+	foreach ($socialBookmarkingServices as $service => $value) {
 		if ($value == false) continue;
 		$site = social_bookmarking_get_service_props($service);
-		$target_href = str_replace('{title}', item('Dublin Core', 'Title'), $site->url);
-		$target_href = str_replace('{link}', abs_uri('items/show/'.item('ID')), $target_href);
+		$targetHref = str_replace('{title}', item('Dublin Core', 'Title'), $site->url);
+		$targetHref = str_replace('{link}', abs_uri('items/show/'.item('ID')), $targetHref);
 		
 		$image = img($site->img);
 		
-        $target_url = '<a class="social_img" href="'.$target_href.'" title="'.$site['name'].'"><img src="'.$image.'" /></a>';
-        echo $target_url;
+        $serviceIcon = '<a class="social_img" href="'.$targetHref.'" title="'.$site['name'].'"><img src="'.$image.'" /></a>';
+        echo $serviceIcon;
 	}
 }
 
