@@ -110,7 +110,7 @@ function social_bookmarking_append_to_item()
 		
 		$image = img($site->img);
 		
-        $serviceIcon = '<a class="social_img" href="'.$targetHref.'" title="'.$site['name'].'"><img src="'.$image.'" /></a>';
+        $serviceIcon = '<a class="social-img" href="'.$targetHref.'" title="'.$site['name'].'"><img src="'.$image.'" /></a>';
         echo $serviceIcon;
 	}
 }
