@@ -100,15 +100,13 @@ function social_bookmarking_config_form()
 
 function social_bookmarking_append_to_item()
 {
-    $item = get_current_item();
-    
-echo '<h2>Social Bookmarking</h2>';
-$socialBookmarkingServices = social_bookmarking_get_services();
+    echo '<h2>Social Bookmarking</h2>';
+    $socialBookmarkingServices = social_bookmarking_get_services();
 	foreach ($socialBookmarkingServices as $service => $value) {
 		if ($value == false) continue;
 		$site = social_bookmarking_get_service_props($service);
 		$targetHref = str_replace('{title}', item('Dublin Core', 'Title'), $site->url);
-		$targetHref = str_replace('{link}', abs_uri('items/show/'.item('ID')), $targetHref);
+		$targetHref = str_replace('{link}', abs_item_uri(), $targetHref);
 		
 		$image = img($site->img);
 		
@@ -125,8 +123,12 @@ function social_bookmarking_get_services()
 
 function social_bookmarking_get_service_props($service)
 {
-    $file = file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'services.xml');
-    $xml = new SimpleXMLElement($file);
+    static $xml = null;
+    if (!$xml) {
+        $file = file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'services.xml');
+        $xml = new SimpleXMLElement($file);
+    }
+
     foreach ($xml->site as $site) {
         if ($site->key != $service) continue;
         return $site;
