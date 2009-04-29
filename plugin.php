@@ -1,6 +1,6 @@
 <?php
 
-define('SOCIAL_BOOKMARKING_VERSION', 1.0);
+define('SOCIAL_BOOKMARKING_VERSION', get_plugin_ini('SocialBookmarking', 'version'));
 
 add_plugin_hook('install', 'social_bookmarking_install');
 add_plugin_hook('uninstall', 'social_bookmarking_uninstall');
