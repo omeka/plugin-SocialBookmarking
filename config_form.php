@@ -1,6 +1,6 @@
 <p>Choose which social bookmarking services you would like to use on your site</p>
 
-<?php $socialBookmarkingServices = unserialize(get_option('social_bookmarking_services')); 
+<?php $socialBookmarkingServices = social_bookmarking_get_services();
 foreach($socialBookmarkingServices as $service => $value): ?>
 
 <label class="<?php echo $service; ?>">

@@ -118,6 +118,7 @@ function social_bookmarking_append_to_item()
 function social_bookmarking_get_services() 
 {
 	$services = unserialize(get_option('social_bookmarking_services'));
+	ksort($services);
 	return $services;
 }
 
