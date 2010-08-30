@@ -61,12 +61,6 @@
         <key>socializer</key>
     </site>
     <site>
-        <name>Ma.gnolia</name>
-        <url>http://ma.gnolia.com/bookmarklet/add?url={link}&amp;title={title}&amp;description={title}</url>
-        <img>magnolia.png</img>
-        <key>magnolia</key>
-    </site>
-    <site>
         <name>Stumble Upon</name>
         <url>http://www.stumbleupon.com/submit?url={link}&amp;title={title}</url>
         <img>stumbleupon.png</img>
@@ -217,7 +211,7 @@
         <key>seotribu</key>
     </site>
     <site>
-        <name>FaceBook</name>
+        <name>Facebook</name>
         <url>http://www.facebook.com/share.php?u={link}</url>
         <img>facebook.png</img>
         <key>facebook</key>
@@ -320,7 +314,7 @@
     </site>
     <site>
         <name>Twitter</name>
-        <url>http://twitthis.com/twit?url={link}</url>
+        <url>http://twitter.com/home?status={title} - {link}</url>
         <img>twitter.png</img>
         <key>twitter</key>
     </site>
