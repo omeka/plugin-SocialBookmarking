@@ -73,34 +73,16 @@
         <key>google</key>
     </site>
     <site>
-        <name>RawSugar</name>
-        <url>http://www.rawsugar.com/tagger/?turl={link}&amp;tttl={title}</url>
-        <img>rawsugar.png</img>
-        <key>rawsugar</key>
-    </site>
-    <site>
         <name>Squidoo</name>
         <url>http://www.squidoo.com/lensmaster/bookmark?{link}</url>
         <img>squidoo.png</img>
         <key>squidoo</key>
     </site>
     <site>
-        <name>BlinkBits</name>
-        <url>http://blinkbits.com/bookmarklets/save.php?v=1&amp;source_url={link}&amp;title={title}</url>
-        <img>blinkbits.png</img>
-        <key>blinkbits</key>
-    </site>
-    <site>
         <name>Netvouz</name>
         <url>http://netvouz.com/action/submitBookmark?url={link}&amp;title={title}&amp;popup=no</url>
         <img>netvouz.png</img>
         <key>netvouz</key>
-    </site>
-    <site>
-        <name>Rojo</name>
-        <url>http://www.rojo.com/add-subscription/?resource={link}</url>
-        <img>rojo.png</img>
-        <key>rojo</key>
     </site>
     <site>
         <name>Blogmarks</name>
@@ -115,22 +97,10 @@
         <key>comments</key>
     </site>
     <site>
-        <name>Scuttle</name>
-        <url>http://www.scuttle.org/bookmarks.php/maxpower?action=add&amp;address={link}&amp;title={title}&amp;description={title}</url>
-        <img>scuttle.png</img>
-        <key>scuttle</key>
-    </site>
-    <site>
         <name>Bloglines</name>
         <url>http://www.bloglines.com/sub/{link}</url>
         <img>bloglines.png</img>
         <key>bloglines</key>
-    </site>
-    <site>
-        <name>Tailrank</name>
-        <url>http://tailrank.com/share/?title={title}&amp;link_href={link}</url>
-        <img>tailrank.png</img>
-        <key>tailrank</key>
     </site>
     <site>
         <name>Segnalo</name>
@@ -167,12 +137,6 @@
         <url>http://www.linkagogo.com/go/AddNoPopup?url={link}&amp;title={title}</url>
         <img>linkagogo.png</img>
         <key>linkagogo</key>
-    </site>
-    <site>
-        <name>Delirious</name>
-        <url>http://de.lirio.us/rubric/post?uri={link}&amp;title={title}&amp;when_done=go_back</url>
-        <img>delirious.png</img>
-        <key>delirious</key>
     </site>
     <site>
         <name>Socialdust</name>
@@ -227,12 +191,6 @@
         <url>http://www.wikio.it/vote?url={link}</url>
         <img>wikio.png</img>
         <key>wikio</key>
-    </site>
-    <site>
-        <name>Health Ranker</name>
-        <url>http://healthranker.com/submit.php?url={link}</url>
-        <img>healthranker.gif</img>
-        <key>healthranker</key>
     </site>
     <site>
         <name>Barrapunto</name>
@@ -307,12 +265,6 @@
         <key>plim</key>
     </site>
     <site>
-        <name>IndianPad</name>
-        <url>http://www.indianpad.com/submit.php?url={link}&amp;title={title}</url>
-        <img>indianpad.png</img>
-        <key>indianpad</key>
-    </site>
-    <site>
         <name>Twitter</name>
         <url>http://twitter.com/home?status={title} - {link}</url>
         <img>twitter.png</img>
@@ -325,12 +277,6 @@
         <key>technotizie</key>
     </site>
     <site>
-        <name>BlueDot</name>
-        <url>http://bluedot.us/Authoring.aspx?&gt;u={link}&amp;title={title}</url>
-        <img>bluedot.png</img>
-        <key>bluedot</key>
-    </site>
-    <site>
         <name>Diggitsport</name>
         <url>http://www.diggitsport.com/posta_ok?action=f2&amp;title={title}&amp;url={link}</url>
         <img>diggitsport.png</img>
@@ -341,12 +287,6 @@
         <url>http://www.connotea.org/addpopup?continue=confirm&amp;uri={link}&amp;title={title}</url>
         <img>connotea.png</img>
         <key>connotea</key>
-    </site>
-    <site>
-        <name>Leonaut</name>
-        <url>http://www.leonaut.com/submit.php?url={link}</url>
-        <img>leonaut.png</img>
-        <key>leonaut</key>
     </site>
     <site>
         <name>Mister-Wong</name>

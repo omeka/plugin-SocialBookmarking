@@ -4,6 +4,7 @@ define('SOCIAL_BOOKMARKING_VERSION', get_plugin_ini('SocialBookmarking', 'versio
 
 add_plugin_hook('install', 'social_bookmarking_install');
 add_plugin_hook('uninstall', 'social_bookmarking_uninstall');
+add_plugin_hook('upgrade', 'social_bookmarking_upgrade');
 add_plugin_hook('config', 'social_bookmarking_config');
 add_plugin_hook('config_form', 'social_bookmarking_config_form');
 add_plugin_hook('public_append_to_items_show', 'social_bookmarking_append_to_item');
@@ -21,20 +22,13 @@ function social_bookmarking_install()
 	'yahoo'				=>	true,
 	'newsvine'			=>	true,
 	'socializer'		=>	false,
-	'magnolia'			=>	false,
 	'stumbleupon'		=>	false,
 	'google'			=>	false,
-	'rawsugar'			=>	false,
 	'squidoo'			=>	false,
-	'blinkbits'			=>	false,
 	'netvouz'			=>	false,
-	'rojo'				=>	false,
 	'blogmarks'			=>	false,
-	'simpy'				=>	false,
 	'comments'			=>	false,
-	'scuttle'			=>	false,
 	'bloglines'			=>	false,
-	'tailrank'			=>	false,
 	'scoopeo'			=>	false,
 	'blogmemes'			=>	false,
 	'blogspherenews'	=>	false,
@@ -43,7 +37,6 @@ function social_bookmarking_install()
 	'netscape'			=>	false,
 	'ask'				=>	false,
 	'linkagogo'			=>	false,
-	'delirious'			=>	false,
 	'socialdust'		=>	false,
 	'live'				=>	false,
 	'slashdot'			=>	false,
@@ -54,8 +47,6 @@ function social_bookmarking_install()
 	'misterwong'		=>	false,
 	'barrapunto'		=>	false,
 	'twitter'			=>	false,
-	'indianpad'			=>	false,
-	'bluedot'			=>	false,
 	'segnalo'			=>	false,
 	'oknotizie'			=>	false,
 	'diggita'			=>	false,
@@ -80,6 +71,37 @@ function social_bookmarking_uninstall()
 {
 	delete_option('social_bookmarking_version');
 	delete_option('social_bookmarking_services');
+}
+
+function social_bookmarking_upgrade($oldVersion, $newVersion)
+{ 
+    if (version_compare($oldVersion, '1.0.1', '<=') )
+    {
+        $servicesToRemove = array(
+                            'blinkbits', 
+                            'bluedot',
+                            'delirious',
+                            'healthranker',
+                            'indianpad',
+                            'leonaut',
+                            'magnolia', 
+                            'rawsugar',
+                            'rojo',
+                            'scuttle',
+                            'simpy',
+                            'tailrank'
+                            );
+        
+        $currentServices = social_bookmarking_get_services();
+        
+        foreach ($servicesToRemove as $remove) {
+            unset($currentServices[$remove]);
+        }
+        
+        $newServices = serialize($currentServices);
+        
+        set_option('social_bookmarking_services', $newServices);
+    }
 }
 
 function social_bookmarking_config() 
