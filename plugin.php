@@ -105,7 +105,7 @@ function social_bookmarking_append_to_item()
 	foreach ($socialBookmarkingServices as $service => $value) {
 		if ($value == false) continue;
 		$site = social_bookmarking_get_service_props($service);
-		$targetHref = str_replace('{title}', strip_formatting(item('Dublin Core', 'Title')), $site->url);
+		$targetHref = str_replace('{title}', urlencode(strip_formatting(item('Dublin Core', 'Title'))), $site->url);
 		$targetHref = str_replace('{link}', abs_item_uri(), $targetHref);
 		
 		$image = img($site->img);
