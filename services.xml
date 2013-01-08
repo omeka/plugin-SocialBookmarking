@@ -218,7 +218,7 @@
     </site>
     <site>
         <name>Blogmemes</name>
-        <url>http://www.blogmemes.com/post.php?url={link}&amp;title={title}</url>
+        <url>http://www.blogmemes.net/post.php?url={link}&amp;title={title}</url>
         <img>blogmemes.png</img>
         <key>blogmemes</key>
     </site>

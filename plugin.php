@@ -7,7 +7,8 @@ add_plugin_hook('uninstall', 'social_bookmarking_uninstall');
 add_plugin_hook('upgrade', 'social_bookmarking_upgrade');
 add_plugin_hook('config', 'social_bookmarking_config');
 add_plugin_hook('config_form', 'social_bookmarking_config_form');
-add_plugin_hook('public_append_to_items_show', 'social_bookmarking_append_to_item');
+//add_plugin_hook('public_append_to_items_show', 'social_bookmarking_append_to_item');
+add_plugin_hook('public_items_show', 'social_bookmarking_append_to_item');
 
 function social_bookmarking_install() 
 {
@@ -104,13 +105,14 @@ function social_bookmarking_upgrade($oldVersion, $newVersion)
     }
 }
 
-function social_bookmarking_config() 
+function social_bookmarking_config($args) 
 {
+        $post = $args['post'];
 	$socialBookmarkingServices = social_bookmarking_get_services();
 	
-	unset($_POST['install_plugin']);
+	unset($post['install_plugin']);
 		
-	$foo = serialize($_POST);
+	$foo = serialize($post);
 	
 	set_option('social_bookmarking_services', $foo);
 }
@@ -120,15 +122,16 @@ function social_bookmarking_config_form()
     include 'config_form.php';
 }
 
-function social_bookmarking_append_to_item()
+function social_bookmarking_append_to_item($args)
 {
     echo '<h2>Social Bookmarking</h2>';
     $socialBookmarkingServices = social_bookmarking_get_services();
+    
 	foreach ($socialBookmarkingServices as $service => $value) {
-		if ($value == false) continue;
-		$site = social_bookmarking_get_service_props($service);
-		$targetHref = str_replace('{title}', urlencode(strip_formatting(item('Dublin Core', 'Title'))), $site->url);
-		$targetHref = str_replace('{link}', abs_item_uri(), $targetHref);
+		if ($value != false) continue;
+                $site = social_bookmarking_get_service_props($service);
+		$targetHref = str_replace('{title}', urlencode(strip_formatting(metadata('item',array('Dublin Core', 'Title')))), $site->url);
+		$targetHref = str_replace('{link}', url(), $targetHref);
 		
 		$image = img($site->img);
 		
@@ -138,9 +141,10 @@ function social_bookmarking_append_to_item()
 }
 
 function social_bookmarking_get_services() 
-{
+{     
 	$services = unserialize(get_option('social_bookmarking_services'));
-	ksort($services);
+	//ksort($services);
+     
 	return $services;
 }
 
@@ -151,7 +155,7 @@ function social_bookmarking_get_service_props($service)
         $file = file_get_contents(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'services.xml');
         $xml = new SimpleXMLElement($file);
     }
-
+    
     foreach ($xml->site as $site) {
         if ($site->key != $service) continue;
         return $site;
