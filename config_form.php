@@ -1,7 +1,9 @@
+<div id="socialServices">
+
 <p>Choose which social bookmarking services you would like to use on your site</p>
 
 <?php $socialBookmarkingServices = social_bookmarking_get_services();
- // print_r($socialBookmarkingServices);
+
 foreach($socialBookmarkingServices as $service => $value): ?>
 
 <label class="<?php echo $service; ?>">
@@ -11,3 +13,5 @@ foreach($socialBookmarkingServices as $service => $value): ?>
 	<img src="<?php echo img($site->img); ?>" /> <?php echo $service; ?></label>
 
 <?php endforeach; ?>
+
+</div>

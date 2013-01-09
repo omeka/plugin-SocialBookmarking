@@ -7,7 +7,7 @@ add_plugin_hook('uninstall', 'social_bookmarking_uninstall');
 add_plugin_hook('upgrade', 'social_bookmarking_upgrade');
 add_plugin_hook('config', 'social_bookmarking_config');
 add_plugin_hook('config_form', 'social_bookmarking_config_form');
-//add_plugin_hook('public_append_to_items_show', 'social_bookmarking_append_to_item');
+add_plugin_hook('admin_head','social_admin_head');
 add_plugin_hook('public_items_show', 'social_bookmarking_append_to_item');
 
 function social_bookmarking_install() 
@@ -160,4 +160,8 @@ function social_bookmarking_get_service_props($service)
         if ($site->key != $service) continue;
         return $site;
     }
+}
+
+function social_admin_head(){
+    queue_css_file('socialStyleSheet');
 }
