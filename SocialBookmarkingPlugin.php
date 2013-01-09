@@ -18,13 +18,15 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     /**
      * @var array Hooks for the plugin.
      */
-    protected $_hooks = array('install', 
-							  'uninstall', 
-							  'upgrade',
-							  'initialize',
-							  'config_form',
-							  'config',
-							  'public_items_show');
+    protected $_hooks = array(
+        'install', 
+	'uninstall', 
+	'upgrade',
+	'initialize',
+	'config_form',
+	'config',
+	'public_items_show',
+        'admin_head');
 
     /**
      * @var array Options and their default values.
@@ -171,7 +173,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 	    echo '<h2>' . __('Social Bookmarking') . '</h2>';
 	    $socialBookmarkingServices = social_bookmarking_get_services();		
 		foreach ($socialBookmarkingServices as $service => $value) {
-			if ($value == false) continue;
+			if ($value == true) continue;
 			$site = social_bookmarking_get_service_props($service);
 			$targetHref = str_replace('{title}', urlencode(strip_formatting(metadata($item, array('Dublin Core', 'Title')))), $site->url);
 			$targetHref = str_replace('{link}', record_url($item, 'show', true), $targetHref);
@@ -180,4 +182,9 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 	        echo $serviceIcon;
 		}
 	}
+        
+        
+    public function hookAdminHead(){
+         queue_css_file('socialStyleSheet');
+    }
 }
