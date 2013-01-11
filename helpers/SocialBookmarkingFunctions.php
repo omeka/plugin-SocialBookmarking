@@ -78,17 +78,24 @@ function social_bookmarking_get_service($serviceCode)
 	return null;
 }
 
-function social_bookmarking_toolbar()
+function social_bookmarking_toolbar($url, $title, $description='')
 {
 	$html = '';
+	
+	// A hack to make the AddThis library work with Omeka.  The AddThis library uses document.getElementsByTagName("body").item(0), which
+	// returns a type error claiming that the item() function does not exist.  This is because Omeka names the body tag "item", which 
+	// is the same name as the item() function.  To avoid this TypeError just, we rename the Omeka body element id to "itemm"
+	$html .= '<script type="text/javascript">if(jQuery("body").attr("id") == "item"){jQuery("body").attr("id", "itemm");}</script>';
+	
 	$html .= '<!-- AddThis Button BEGIN -->';
-	$html .= '<div class="addthis_toolbox addthis_default_style addthis_32x32_style">';
+	$html .= '<div class="addthis_toolbox addthis_default_style addthis_32x32_style"';
+	$html .= ' addthis:url="' . html_escape($url) . '" addthis:title="' . html_escape($title) . '" addthis:description="' . html_escape($description) . '">';
 	$services = social_bookmarking_get_services();
 	$serviceSettings = social_bookmarking_get_service_settings();	
 	$booleanFilter = new Omeka_Filter_Boolean;
 	foreach ($serviceSettings as $serviceCode => $value) {
 		if ($booleanFilter->filter($value) && array_key_exists($serviceCode, $services)) {
-			$html .= '<a class="addthis_button_' . $serviceCode . '"></a>';
+			$html .= '<a class="addthis_button_' . html_escape($serviceCode) . '"></a>';
 		}
 	}
 	$html .= '<a class="addthis_button_compact"></a>';		

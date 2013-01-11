@@ -7,6 +7,9 @@
  */
 const SOCIAL_BOOKMARKING_ADDTHIS_SERVICES_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.xml';
 const SOCIAL_BOOKMARKING_SERVICE_SETTINGS_OPTION = 'social_bookmarking_services';
+const SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
+const SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
+
 
 require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
 
@@ -24,13 +27,16 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 							  'initialize',
 							  'config_form',
 							  'config',
-							  'public_items_show');
+							  'public_items_show',
+							  'public_collections_show');
 
     /**
      * @var array Options and their default values.
      */
     protected $_options = array(
 		'social_bookmarking_services' => '',
+		'social_bookmarking_add_to_omeka_items' => '1',
+		'social_bookmarking_add_to_omeka_collections' => '1',
     );
 
     /**
@@ -90,8 +96,15 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookConfig($args)
     {
 		$post = $args['post'];
-		$serviceSettings = social_bookmarking_get_service_settings();
 		unset($post['install_plugin']);
+		
+		set_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION, $post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION]);
+		unset($post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION]);
+
+		set_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION, $post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+		unset($post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+
+		$serviceSettings = social_bookmarking_get_service_settings();
 		$booleanFilter = new Omeka_Filter_Boolean;
 		foreach($post as $key => $value) {
 			if (array_key_exists($key, $serviceSettings)) {
@@ -102,11 +115,27 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
 	public function hookPublicItemsShow()
-	{		
-		$item = get_current_record('item');
-	    $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
-		$url = record_url($item, 'show', true);
-		echo '<h2>' . __('Social Bookmarking') . '</h2>';
-		echo social_bookmarking_toolbar();
+	{	
+		if (get_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION) == '1') {
+			$item = get_current_record('item');
+			$url = record_url($item, 'show', true);
+		    $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
+		    $description = strip_formatting(metadata($item, array('Dublin Core', 'Description')));
+			echo '<h2>' . __('Social Bookmarking') . '</h2>';
+			echo social_bookmarking_toolbar($url, $title, $description);
+		}	
 	}
+	
+	public function hookPublicCollectionsShow()
+	{	
+		if (get_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION) == '1') {			
+			$collection = get_current_record('collection');
+			$url = record_url($collection, 'show', true);
+		    $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title')));
+		    $description = strip_formatting(metadata($collection, array('Dublin Core', 'Description')));
+			echo '<h2>' . __('Social Bookmarking') . '</h2>';
+			echo social_bookmarking_toolbar($url, $title, $description);
+		}
+	}
+	
 }
