@@ -1,11 +1,18 @@
 <p><?php echo __('Choose which social bookmarking services you would like to use on your site.'); ?></p>
-
-<?php $socialBookmarkingServices = social_bookmarking_get_services(); ?>
-
-<?php foreach($socialBookmarkingServices as $service => $value): ?>
+<?php
+	$services = social_bookmarking_get_services();	
+	$serviceSettings = social_bookmarking_get_service_settings();
+?>
+<?php foreach($services as $serviceCode => $serviceInfo): ?>
+	<?php	
+		if (array_key_exists($serviceCode, $serviceSettings)) {
+			$value = $serviceSettings[$serviceCode];
+		} else {
+			$value = false;
+		}
+	?>
 	<div class="inputs five columns omega">
-	<?php echo get_view()->formCheckbox($service, true, array('checked'=>(boolean)$value)); ?>
-	<?php $site = social_bookmarking_get_service_props($service); ?>
-	<img src="<?php echo img($site->img); ?>" /> <?php echo _($service); ?>
+	<?php echo get_view()->formCheckbox($serviceCode, true, array('checked'=>(boolean)$value)); ?>
+	<img src="<?php echo $serviceInfo['icon']; ?>" /> <?php echo _($serviceInfo['name']); ?>
 	</div>
 <?php endforeach; ?>
