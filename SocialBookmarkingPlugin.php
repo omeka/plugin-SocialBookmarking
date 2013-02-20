@@ -10,7 +10,6 @@ const SOCIAL_BOOKMARKING_SERVICE_SETTINGS_OPTION = 'social_bookmarking_services'
 const SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
 const SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
 
-
 require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
 
 /**
@@ -136,6 +135,5 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 			echo '<h2>' . __('Social Bookmarking') . '</h2>';
 			echo social_bookmarking_toolbar($url, $title, $description);
 		}
-	}
-	
+	}	
 }
