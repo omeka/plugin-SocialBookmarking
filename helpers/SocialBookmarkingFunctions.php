@@ -8,14 +8,14 @@
 
 function social_bookmarking_get_service_settings() 
 {
-	$serviceSettings = unserialize(get_option(SOCIAL_BOOKMARKING_SERVICE_SETTINGS_OPTION));
+	$serviceSettings = unserialize(get_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION));
 	ksort($serviceSettings);
 	return $serviceSettings;
 }
 
 function social_bookmarking_set_service_settings($serviceSettings) 
 {
-	set_option(SOCIAL_BOOKMARKING_SERVICE_SETTINGS_OPTION, serialize($serviceSettings));
+	set_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION, serialize($serviceSettings));
 }
 
 function social_bookmarking_get_default_service_settings()
@@ -43,7 +43,7 @@ function social_bookmarking_get_services_xml()
 {
     static $xml = null;
     if (!$xml) {
-        $file = file_get_contents(SOCIAL_BOOKMARKING_ADDTHIS_SERVICES_URL);
+        $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
         $xml = new SimpleXMLElement($file);
     }
 	return $xml;

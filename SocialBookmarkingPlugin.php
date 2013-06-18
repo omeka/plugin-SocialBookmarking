@@ -5,10 +5,7 @@
  * @copyright Copyright 2008-2013 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  */
-const SOCIAL_BOOKMARKING_ADDTHIS_SERVICES_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.xml';
-const SOCIAL_BOOKMARKING_SERVICE_SETTINGS_OPTION = 'social_bookmarking_services';
-const SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
-const SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
+
 
 require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
 
@@ -16,7 +13,12 @@ require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
  * Social Bookmarking plugin.
  */
 class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
-{	
+{
+    const ADDTHIS_SERVICES_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.xml';
+    const SERVICE_SETTINGS_OPTION = 'social_bookmarking_services';
+    const ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
+    const ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
+
     /**
      * @var array Hooks for the plugin.
      */
@@ -97,11 +99,11 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 		$post = $args['post'];
 		unset($post['install_plugin']);
 		
-		set_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION, $post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION]);
-		unset($post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION]);
+		set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
+		unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
 
-		set_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION, $post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION]);
-		unset($post[SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+		set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+		unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
 
 		$serviceSettings = social_bookmarking_get_service_settings();
 		$booleanFilter = new Omeka_Filter_Boolean;
@@ -115,7 +117,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 
 	public function hookPublicItemsShow()
 	{	
-		if (get_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION) == '1') {
+		if (get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION) == '1') {
 			$item = get_current_record('item');
 			$url = record_url($item, 'show', true);
 		    $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
@@ -127,7 +129,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 	
 	public function hookPublicCollectionsShow()
 	{	
-		if (get_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION) == '1') {			
+		if (get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION) == '1') {			
 			$collection = get_current_record('collection');
 			$url = record_url($collection, 'show', true);
 		    $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title')));

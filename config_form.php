@@ -2,12 +2,12 @@
 
 	<div class="field">
 	    <div class="two columns alpha">
-			<?php echo get_view()->formLabel(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION, 'Add to Items'); ?>		
+			<?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, 'Add to Items'); ?>		
 	    </div>
 	    <div class="inputs five columns omega">
-	       	<?php echo get_view()->formCheckbox(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION, 
+	       	<?php echo get_view()->formCheckbox(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, 
 										   true, 
-										   array('checked'=>(boolean)get_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_ITEMS_OPTION))); ?>
+										   array('checked'=>(boolean)get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION))); ?>
 	        <p class="explanation"><?php echo __(
 	            'If checked, this plugin will add a social bookmarking toolbar at the bottom of every public item show page.'
 	        ); ?></p>
@@ -16,12 +16,12 @@
 
 	<div class="field">
 	    <div class="two columns alpha">
-			<?php echo get_view()->formLabel(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION, 'Add to Collections'); ?>		
+			<?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, 'Add to Collections'); ?>		
 	    </div>
 	    <div class="inputs five columns omega">
-	       	<?php echo get_view()->formCheckbox(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION, 
+	       	<?php echo get_view()->formCheckbox(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, 
 										   true, 
-										   array('checked'=>(boolean)get_option(SOCIAL_BOOKMARKING_ADD_TO_OMEKA_COLLECTIONS_OPTION))); ?>
+										   array('checked'=>(boolean)get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION))); ?>
 	        <p class="explanation"><?php echo __(
 	            'If checked, this plugin will add a social bookmarking toolbar at the bottom of every public collection show page.'
 	        ); ?></p>
