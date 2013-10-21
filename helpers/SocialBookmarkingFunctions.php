@@ -94,7 +94,6 @@ function social_bookmarking_toolbar($url, $title, $description='')
     $services = social_bookmarking_get_services();
     $serviceSettings = social_bookmarking_get_service_settings();
     $booleanFilter = new Omeka_Filter_Boolean;
-    $addthisAccountID = social_bookmarking_get_addthis_account_id();
     foreach ($serviceSettings as $serviceCode => $value) {
         if ($booleanFilter->filter($value) && array_key_exists($serviceCode, $services)) {
             $html .= '<a class="addthis_button_' . html_escape($serviceCode) . '"></a>';
@@ -104,7 +103,8 @@ function social_bookmarking_toolbar($url, $title, $description='')
     //$html .= '<a class="addthis_counter addthis_bubble_style"></a>';
     $html .= '</div>';
     $html .= '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js';
-
+    
+    $addthisAccountID = social_bookmarking_get_addthis_account_id();
     if(!empty($addthisAccountID)) {
         $html .= '#pubid=' . $addthisAccountID;
     }
