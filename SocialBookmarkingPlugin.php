@@ -129,8 +129,8 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $url = record_url($item, 'show', true);
             $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($item, array('Dublin Core', 'Description')));
-            echo '<div id="socialBookmarking">';
-            echo '<h2>' . __('Social Bookmarking') . '</h2>';
+            echo '<div id="socialBookmarking" class="well">';
+            echo '<h2>' . __('Share') . '</h2>';
             echo social_bookmarking_toolbar($url, $title, $description);
             echo '</div>';
         }
@@ -143,8 +143,8 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $url = record_url($collection, 'show', true);
             $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($collection, array('Dublin Core', 'Description')));
-            echo '<div id="socialBookmarking">';
-            echo '<h2>' . __('Social Bookmarking') . '</h2>';
+            echo '<div id="socialBookmarking" class="well">';
+            echo '<h2>' . __('Share') . '</h2>';
             echo social_bookmarking_toolbar($url, $title, $description);
             echo '</div>';
         }
