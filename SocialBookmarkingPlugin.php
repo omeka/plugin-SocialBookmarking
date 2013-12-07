@@ -6,9 +6,6 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  */
 
-
-require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
-
 /**
  * Social Bookmarking plugin.
  */
@@ -47,7 +44,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookInstall()
     {
-        $this->_options['social_bookmarking_services'] = serialize(social_bookmarking_get_default_service_settings());
+        $this->_options['social_bookmarking_services'] = serialize($this->_get_default_service_settings());
         $this->_installOptions();
     }
 
@@ -67,14 +64,14 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookUpgrade($args)
     {
         $booleanFilter = new Omeka_Filter_Boolean;
-        $newServiceSettings = social_bookmarking_get_default_service_settings();
-        $oldServiceSettings = social_bookmarking_get_service_settings();
+        $newServiceSettings = $this->_get_default_service_settings();
+        $oldServiceSettings = $this->_get_service_settings();
         foreach($newServiceSettings as $serviceCode => $value) {
             if (array_key_exists($serviceCode, $oldServiceSettings)) {
                 $newServiceSettings[$serviceCode] = $booleanFilter->filter($oldServiceSettings[$serviceCode]);
             }
         }
-        social_bookmarking_set_service_settings($newServiceSettings);
+        $this->_set_service_settings($newServiceSettings);
     }
 
     /**
@@ -86,11 +83,26 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     /**
-     * Display the plugin config form.
+     * Render the config form.
      */
     public function hookConfigForm()
     {
-        require dirname(__FILE__) . '/config_form.php';
+        // Set form defaults.
+        $services = $this->_get_services();
+        $serviceSettings = $this->_get_service_settings();
+        $setServices = array();
+        foreach($services as $serviceCode => $serviceInfo) {
+            $setServices[$serviceCode] = array_key_exists($serviceCode, $serviceSettings)
+                ? $serviceSettings[$serviceCode]
+                : false;
+        }
+
+        echo get_view()->partial(
+            'plugins/social-bookmarking-config-form.php',
+            array(
+                'services' => $services,
+                'setServices' => $setServices,
+        ));
     }
 
     /**
@@ -99,22 +111,24 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookConfig($args)
     {
         $post = $args['post'];
-        unset($post['install_plugin']);
 
         set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
-        unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
-
         set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+
+        unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
         unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
 
-        $serviceSettings = social_bookmarking_get_service_settings();
+        $serviceSettings = $this->_get_service_settings();
         $booleanFilter = new Omeka_Filter_Boolean;
         foreach($post as $key => $value) {
             if (array_key_exists($key, $serviceSettings)) {
                 $serviceSettings[$key] = $booleanFilter->filter($value);
             }
+            else {
+                $serviceSettings[$key] = false;
+            }
         }
-        social_bookmarking_set_service_settings($serviceSettings);
+        $this->_set_service_settings($serviceSettings);
     }
 
     public function hookPublicItemsShow()
@@ -125,7 +139,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($item, array('Dublin Core', 'Description')));
             echo '<h2>' . __('Social Bookmarking') . '</h2>';
-            echo social_bookmarking_toolbar($url, $title, $description);
+            echo $this->_toolbar($url, $title, $description);
         }
     }
 
@@ -137,7 +151,104 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($collection, array('Dublin Core', 'Description')));
             echo '<h2>' . __('Social Bookmarking') . '</h2>';
-            echo social_bookmarking_toolbar($url, $title, $description);
+            echo $this->_toolbar($url, $title, $description);
         }
+    }
+
+    protected function _get_service_settings()
+    {
+        $serviceSettings = unserialize(get_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION));
+        ksort($serviceSettings);
+        return $serviceSettings;
+    }
+
+    protected function _set_service_settings($serviceSettings)
+    {
+        set_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION, serialize($serviceSettings));
+    }
+
+    protected function _get_default_service_settings()
+    {
+        $services =  $this->_get_services();
+        $serviceSettings = array();
+        $defaultEnabledServiceCodes = array(
+            'facebook',
+            'twitter',
+            'linkedin',
+            'pinterest',
+            'email',
+            'google',
+            'orkut',
+            'delicious',
+            'digg',
+            'stumbleupon',
+            'yahoobkm'
+        );
+        foreach($services as $serviceCode => $serviceInfo) {
+            $serviceSettings[$serviceCode] = in_array($serviceCode, $defaultEnabledServiceCodes);
+        }
+        return $serviceSettings;
+    }
+
+    protected function _get_services_xml()
+    {
+        static $xml = null;
+        if (!$xml) {
+            $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
+            $xml = new SimpleXMLElement($file);
+        }
+        return $xml;
+    }
+
+    protected function _get_services()
+    {
+        static $services = null;
+        $booleanFilter = new Omeka_Filter_Boolean;
+        if (!$services) {
+            $xml = $this->_get_services_xml();
+            $services = array();
+            foreach ($xml->data->services->service as $service) {
+                $serviceCode = (string)$service->code;
+                $services[$serviceCode] = array(
+                    'code' => $serviceCode,
+                    'name' => (string)$service->name,
+                    'icon' => (string)$service->icon,
+                    'script_only' => $booleanFilter->filter((string)$service->script_only),
+                );
+            }
+        }
+        return $services;
+    }
+
+    protected function _get_service($serviceCode)
+    {
+        $services = $this->_get_services();
+        if (array_key_exists($serviceCode, $services)) {
+            return $services[$serviceCode];
+        }
+        return null;
+    }
+
+    protected function _toolbar($url, $title, $description='')
+    {
+        $html = '';
+        $html .= '<!-- AddThis Button BEGIN -->';
+        $html .= '<div class="addthis_toolbox addthis_default_style addthis_32x32_style"';
+        $html .= ' addthis:url="' . html_escape($url) . '" addthis:title="' . html_escape($title) . '" addthis:description="' . html_escape($description) . '">';
+        $services = $this->_get_services();
+        $serviceSettings = $this->_get_service_settings();
+        $booleanFilter = new Omeka_Filter_Boolean;
+        foreach ($serviceSettings as $serviceCode => $value) {
+            if ($booleanFilter->filter($value) && array_key_exists($serviceCode, $services)) {
+                $html .= '<a class="addthis_button_' . html_escape($serviceCode) . '"></a>';
+            }
+        }
+        $html .= '<a class="addthis_button_compact"></a>';
+        //$html .= '<a class="addthis_counter addthis_bubble_style"></a>';
+        $html .= '</div>';
+        $html .= '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>';
+        $html .= '<!-- AddThis Button END -->';
+
+        return $html;
     }
 }
