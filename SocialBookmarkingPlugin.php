@@ -16,6 +16,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     const ADD_TO_HEADER_OPTION = 'social_bookmarking_add_to_header';
     const ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
     const ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
+    const ADDTHIS_ACCOUNT_ID = 'social_bookmarking_addthis_account_id';
 
     /**
      * @var array Hooks for the plugin.
@@ -40,6 +41,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         'social_bookmarking_add_to_header' => '1',
         'social_bookmarking_add_to_omeka_items' => '1',
         'social_bookmarking_add_to_omeka_collections' => '1',
+        'social_bookmarking_addthis_account_id' => '',
     );
 
     /**
@@ -135,10 +137,12 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         set_option(SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION]);
         set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
         set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+        set_option(SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID, $post[SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID]);
 
         unset($post[SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION]);
         unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
         unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
+        unset($post[SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID]);
 
         $serviceSettings = $this->_get_service_settings();
         $booleanFilter = new Omeka_Filter_Boolean;
@@ -182,13 +186,16 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
                 $title= isset($vars['title']) ? $vars['title'] : get_option('site_title');
                 $description = '';
             }
+            echo '<div id="socialBookmarking" class="well">';
             echo $view->partial('social-bookmarking-toolbar.php', array(
                 'url' => $url,
                 'title' => $title,
                 'description' => $description,
                 'services' => $this->_get_services(),
                 'serviceSettings' => $this->_get_service_settings(),
+                'addthisAccountID' => $this->_get_addthis_account_id(),
             ));
+            echo '</div>';
         }
     }
 
@@ -203,14 +210,17 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $url = record_url($item, 'show', true);
             $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($item, array('Dublin Core', 'Description')));
-            echo '<h2>' . __('Social Bookmarking') . '</h2>';
+            echo '<div id="socialBookmarking" class="well">';
+            echo '<h2>' . __('Share') . '</h2>';
             echo $view->partial('social-bookmarking-toolbar.php', array(
                 'url' => $url,
                 'title' => $title,
                 'description' => $description,
                 'services' => $this->_get_services(),
                 'serviceSettings' => $this->_get_service_settings(),
+                'addthisAccountID' => $this->_get_addthis_account_id(),
             ));
+            echo '</div>';
         }
     }
 
@@ -225,14 +235,17 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $url = record_url($collection, 'show', true);
             $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($collection, array('Dublin Core', 'Description')));
-            echo '<h2>' . __('Social Bookmarking') . '</h2>';
+            echo '<div id="socialBookmarking" class="well">';
+            echo '<h2>' . __('Share') . '</h2>';
             echo $view->partial('social-bookmarking-toolbar.php', array(
                 'url' => $url,
                 'title' => $title,
                 'description' => $description,
                 'services' => $this->_get_services(),
                 'serviceSettings' => $this->_get_service_settings(),
+                'addthisAccountID' => $this->_get_addthis_account_id(),
             ));
+            echo '</div>';
         }
     }
 
@@ -313,5 +326,14 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
             $xml = new SimpleXMLElement($file);
         }
         return $xml;
+    }
+
+    /**
+     * Gets the addthis accound id.
+     */
+    protected function _get_addthis_account_id()
+    {
+        $thisId = get_option(SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID);
+        return $thisId;
     }
 }

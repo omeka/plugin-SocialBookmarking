@@ -1,6 +1,21 @@
 <div id="socialBookmarkingServiceSettings">
     <div class="field">
         <div class="two columns alpha">
+            <?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID, 'AddThis Account ID'); ?>
+        </div>
+        <div class="inputs five columns omega">
+            <?php echo get_view()->formText(
+                SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID,
+                get_option(SocialBookmarkingPlugin::ADDTHIS_ACCOUNT_ID),
+                array('placeholder' => 'AddThisID')); ?>
+            <p class="explanation"><?php echo __(
+                'Enter an optional AddThis account ID to enable the tracking of shares via the AddThis analytics tool.'
+            ); ?></p>
+        </div>
+    </div>
+
+    <div class="field">
+        <div class="two columns alpha">
             <?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION, 'Add to Header'); ?>
         </div>
         <div class="inputs five columns omega">
