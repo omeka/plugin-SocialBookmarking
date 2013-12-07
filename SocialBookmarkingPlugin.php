@@ -13,6 +13,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 {
     const ADDTHIS_SERVICES_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.xml';
     const SERVICE_SETTINGS_OPTION = 'social_bookmarking_services';
+    const ADD_TO_HEADER_OPTION = 'social_bookmarking_add_to_header';
     const ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
     const ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
 
@@ -26,6 +27,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         'initialize',
         'config_form',
         'config',
+        'public_header',
         'public_items_show',
         'public_collections_show'
     );
@@ -35,8 +37,26 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
      */
     protected $_options = array(
         'social_bookmarking_services' => '',
+        'social_bookmarking_add_to_header' => '1',
         'social_bookmarking_add_to_omeka_items' => '1',
         'social_bookmarking_add_to_omeka_collections' => '1',
+    );
+
+    /**
+     * @var array Default services.
+     */
+    protected $_defaultEnabledServiceCodes = array(
+        'facebook',
+        'twitter',
+        'linkedin',
+        'pinterest',
+        'email',
+        'google',
+        'orkut',
+        'delicious',
+        'digg',
+        'stumbleupon',
+        'yahoobkm'
     );
 
     /**
@@ -112,9 +132,11 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     {
         $post = $args['post'];
 
+        set_option(SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION]);
         set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
         set_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, $post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
 
+        unset($post[SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION]);
         unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION]);
         unset($post[SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION]);
 
@@ -131,30 +153,92 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         $this->_set_service_settings($serviceSettings);
     }
 
-    public function hookPublicItemsShow()
+    /**
+     * Hook for public header.
+     */
+    public function hookPublicHeader($args)
+    {
+        if (get_option(SocialBookmarkingPlugin::ADD_TO_HEADER_OPTION) == '1') {
+            $view = $args['view'];
+            $vars = $view->getVars();
+            $request = Zend_Controller_Front::getInstance()->getRequest();
+            $params = $request->getParams();
+
+            // We need absolute urls and getRequestUri() doesn't return domain.
+            $url = WEB_ROOT . $request->getPathInfo();
+            if ($params['action'] == 'show' && in_array($params['controller'], array(
+                    'collections',
+                    'items',
+                    'files',
+                ))) {
+                $recordType = $view->singularize($params['controller']);
+                $record = get_current_record($recordType);
+                $title = isset($vars['title'])
+                    ? $vars['title']
+                    : strip_formatting(metadata($record, array('Dublin Core', 'Title')));
+                $description = strip_formatting(metadata($record, array('Dublin Core', 'Description')));
+            }
+            else {
+                $title= isset($vars['title']) ? $vars['title'] : get_option('site_title');
+                $description = '';
+            }
+            echo $view->partial('social-bookmarking-toolbar.php', array(
+                'url' => $url,
+                'title' => $title,
+                'description' => $description,
+                'services' => $this->_get_services(),
+                'serviceSettings' => $this->_get_service_settings(),
+            ));
+        }
+    }
+
+    /**
+     * Hook for public items show view.
+     */
+    public function hookPublicItemsShow($args)
     {
         if (get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION) == '1') {
-            $item = get_current_record('item');
+            $view = $args['view'];
+            $item = $args['item'];
             $url = record_url($item, 'show', true);
             $title = strip_formatting(metadata($item, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($item, array('Dublin Core', 'Description')));
             echo '<h2>' . __('Social Bookmarking') . '</h2>';
-            echo $this->_toolbar($url, $title, $description);
+            echo $view->partial('social-bookmarking-toolbar.php', array(
+                'url' => $url,
+                'title' => $title,
+                'description' => $description,
+                'services' => $this->_get_services(),
+                'serviceSettings' => $this->_get_service_settings(),
+            ));
         }
     }
 
-    public function hookPublicCollectionsShow()
+    /**
+     * Hook for public collections show view.
+     */
+    public function hookPublicCollectionsShow($args)
     {
         if (get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION) == '1') {
-            $collection = get_current_record('collection');
+            $view = $args['view'];
+            $collection = $args['collection'];
             $url = record_url($collection, 'show', true);
             $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title')));
             $description = strip_formatting(metadata($collection, array('Dublin Core', 'Description')));
             echo '<h2>' . __('Social Bookmarking') . '</h2>';
-            echo $this->_toolbar($url, $title, $description);
+            echo $view->partial('social-bookmarking-toolbar.php', array(
+                'url' => $url,
+                'title' => $title,
+                'description' => $description,
+                'services' => $this->_get_services(),
+                'serviceSettings' => $this->_get_service_settings(),
+            ));
         }
     }
 
+    /**
+     * Gets the service settings from the database.
+     */
     protected function _get_service_settings()
     {
         $serviceSettings = unserialize(get_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION));
@@ -162,44 +246,30 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         return $serviceSettings;
     }
 
+    /**
+     * Saves the service settings in the database.
+     */
     protected function _set_service_settings($serviceSettings)
     {
         set_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION, serialize($serviceSettings));
     }
 
+    /**
+     * Sets default service settings.
+     */
     protected function _get_default_service_settings()
     {
         $services =  $this->_get_services();
         $serviceSettings = array();
-        $defaultEnabledServiceCodes = array(
-            'facebook',
-            'twitter',
-            'linkedin',
-            'pinterest',
-            'email',
-            'google',
-            'orkut',
-            'delicious',
-            'digg',
-            'stumbleupon',
-            'yahoobkm'
-        );
         foreach($services as $serviceCode => $serviceInfo) {
-            $serviceSettings[$serviceCode] = in_array($serviceCode, $defaultEnabledServiceCodes);
+            $serviceSettings[$serviceCode] = in_array($serviceCode, $this->_defaultEnabledServiceCodes);
         }
         return $serviceSettings;
     }
 
-    protected function _get_services_xml()
-    {
-        static $xml = null;
-        if (!$xml) {
-            $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
-            $xml = new SimpleXMLElement($file);
-        }
-        return $xml;
-    }
-
+    /**
+     * Gets current services from AddThis.
+     */
     protected function _get_services()
     {
         static $services = null;
@@ -220,6 +290,9 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         return $services;
     }
 
+    /**
+     * Gets one current service from AddThis.
+     */
     protected function _get_service($serviceCode)
     {
         $services = $this->_get_services();
@@ -229,26 +302,16 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         return null;
     }
 
-    protected function _toolbar($url, $title, $description='')
+    /**
+     * Gets list of services from AddThis.
+     */
+    protected function _get_services_xml()
     {
-        $html = '';
-        $html .= '<!-- AddThis Button BEGIN -->';
-        $html .= '<div class="addthis_toolbox addthis_default_style addthis_32x32_style"';
-        $html .= ' addthis:url="' . html_escape($url) . '" addthis:title="' . html_escape($title) . '" addthis:description="' . html_escape($description) . '">';
-        $services = $this->_get_services();
-        $serviceSettings = $this->_get_service_settings();
-        $booleanFilter = new Omeka_Filter_Boolean;
-        foreach ($serviceSettings as $serviceCode => $value) {
-            if ($booleanFilter->filter($value) && array_key_exists($serviceCode, $services)) {
-                $html .= '<a class="addthis_button_' . html_escape($serviceCode) . '"></a>';
-            }
+        static $xml = null;
+        if (!$xml) {
+            $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
+            $xml = new SimpleXMLElement($file);
         }
-        $html .= '<a class="addthis_button_compact"></a>';
-        //$html .= '<a class="addthis_counter addthis_bubble_style"></a>';
-        $html .= '</div>';
-        $html .= '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>';
-        $html .= '<!-- AddThis Button END -->';
-
-        return $html;
+        return $xml;
     }
 }
