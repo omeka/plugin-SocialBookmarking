@@ -1,8 +1,89 @@
-plugin-SocialBookmarking
-========================
+Social Bookmarking (plugin for Omeka)
+====================================
 
-Inserts a list of social bookmarking sites to the bottom of each item in an Omeka archive, 
-so that public users can easily share items they like with their social networks.
 
-This fork includes the configuration of an optional AddThisId which enables the user to
-track shares via their AddThis account analytics.
+Summary
+-------
+
+[SocialBookmarking] is a plugin for [Omeka] inserts a list of social bookmarking
+sites to the header of any page or at the bottom of each item or collection in
+an Omeka archive, so that public users can easily share items they like with
+their social networks.
+
+An optional AddThisId can be configured to enable the user to track shares via
+their [AddThis] account analytics.
+
+
+Installation
+------------
+
+Uncompress files and rename plugin folder "SocialBookmarking".
+
+Then install it like any other Omeka plugin and follow the config instructions.
+
+The plugin can use AddThis ID. You need to get key to this service and set it.
+
+
+Warning
+-------
+
+Use it at your own risk.
+
+It's always recommended to backup your files and database so you can roll back
+if needed.
+
+
+Troubleshooting
+---------------
+
+See online [SocialBookmarking issues] on the Omeka forum.
+
+
+License
+-------
+
+This plugin is published under [GNU/GPL].
+
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later
+version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+details.
+
+You should have received a copy of the GNU General Public License along with
+this program; if not, write to the Free Software Foundation, Inc.,
+51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+
+Contact
+-------
+
+Current maintainers:
+* [Center for History & New Media]
+
+This plugin has been built by [Jeremy Boggs], upgraded by [Center for History & New Media],
+and forked by [Anuragji].
+
+
+Copyright
+---------
+
+* Copyright Jeremy Boggs, 2008-2011
+* Copyright Center for History & New Media, 2013
+* Copyright Anuragji, 2013
+* Copyright Daniel Berthereau, 2013
+
+
+[Omeka]: https://omeka.org
+[AddThis]: http://www.addthis.com
+[SocialBookmarking]: https://github.com/omeka/plugin-SocialBookmarking
+[SocialBookmarking issues]: http://omeka.org/forums/forum/plugins
+[GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html "GNU/GPL v3"
+[Jeremy Boggs]: https://github.com/clioweb
+[Center for History & New Media]: http://chnm.gmu.edu
+[Anuragji]: https://github.com/anuragji
+[Daniel Berthereau]: https://github.com/Daniel-KM
