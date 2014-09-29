@@ -26,9 +26,9 @@ function social_bookmarking_get_default_service_settings()
         'facebook',
         'twitter',
         'linkedin',
-        'pinterest',
+        'pinterest_share',
         'email',
-        'google',
+        'google_plusone_share',
         'delicious',
     );
     foreach($services as $serviceCode => $serviceInfo) {
