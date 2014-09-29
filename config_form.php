@@ -35,7 +35,7 @@
         </div>
 
         <div class="inputs five columns omega">
-        <ul class="details">
+        <ul style="list-style-type:none" class="details">
         <?php
             $services = social_bookmarking_get_services();
             $serviceSettings = social_bookmarking_get_service_settings();
@@ -46,9 +46,11 @@
                     $value = false;
                 }
         ?>
-            <li class="details">
+            <li>
             <?php echo get_view()->formCheckbox($serviceCode, true, array('checked'=>(boolean)$value)); ?>
-            <img src="<?php echo html_escape($serviceInfo['icon']); ?>" /> <?php echo html_escape($serviceInfo['name']); ?>
+            <span style="display:inline" class="addthis_service_icon icon_<?php echo html_escape($serviceCode); ?>"></span>
+            &nbsp;
+            <?php echo html_escape($serviceInfo['name']); ?>
             </li>
         <?php endforeach; ?>
             </ul>

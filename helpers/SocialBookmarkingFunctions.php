@@ -29,11 +29,7 @@ function social_bookmarking_get_default_service_settings()
         'pinterest',
         'email',
         'google',
-        'orkut',
         'delicious',
-        'digg',
-        'stumbleupon',
-        'yahoobkm'
     );
     foreach($services as $serviceCode => $serviceInfo) {
         $serviceSettings[$serviceCode] = in_array($serviceCode, $defaultEnabledServiceCodes);
@@ -63,7 +59,7 @@ function social_bookmarking_get_services()
             $services[$serviceCode] = array(
                 'code' => $serviceCode,
                 'name' => (string)$service->name,
-                'icon' => (string)$service->icon,
+                'icon' => (string)$service->icon32,
                 'script_only' => $booleanFilter->filter((string)$service->script_only),
             );
         }

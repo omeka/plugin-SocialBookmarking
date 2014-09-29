@@ -29,6 +29,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         'initialize',
         'config_form',
         'config',
+        'admin_head',
         'public_items_show',
         'public_collections_show'
     );
@@ -84,6 +85,13 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
     {
         add_translation_source(dirname(__FILE__) . '/languages');
     }
+
+    public function hookAdminHead()
+    {
+        $request = Zend_Controller_Front::getInstance()->getRequest();
+        if ($request->getModuleName() == 'default' && $request->getControllerName() == 'plugins' && $request->getActionName() == 'config' && $request->getParam('name') == 'SocialBookmarking'){
+            queue_css_url('http://cache.addthiscdn.com/icons/v1/sprites/services.css');
+    }   }
 
     /**
      * Display the plugin config form.
