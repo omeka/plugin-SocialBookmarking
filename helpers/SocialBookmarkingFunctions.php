@@ -42,7 +42,9 @@ function social_bookmarking_get_services_xml()
     static $xml = null;
     if (!$xml) {
         $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
-        $xml = new SimpleXMLElement($file);
+        if (!empty($file)) {
+            $xml = new SimpleXMLElement($file);
+        }
     }
     return $xml;
 }
@@ -54,14 +56,16 @@ function social_bookmarking_get_services()
     if (!$services) {
         $xml = social_bookmarking_get_services_xml();
         $services = array();
-        foreach ($xml->data->services->service as $service) {
-            $serviceCode = (string)$service->code;
-            $services[$serviceCode] = array(
-                'code' => $serviceCode,
-                'name' => (string)$service->name,
-                'icon' => (string)$service->icon32,
-                'script_only' => $booleanFilter->filter((string)$service->script_only),
-            );
+        if (!empty($xml)) {
+            foreach ($xml->data->services->service as $service) {
+                $serviceCode = (string)$service->code;
+                $services[$serviceCode] = array(
+                    'code' => $serviceCode,
+                    'name' => (string)$service->name,
+                    'icon' => (string)$service->icon32,
+                    'script_only' => $booleanFilter->filter((string)$service->script_only),
+                );
+            }
         }
     }
     return $services;
