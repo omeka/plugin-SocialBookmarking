@@ -37,16 +37,16 @@ function social_bookmarking_get_default_service_settings()
     return $serviceSettings;
 }
 
-function social_bookmarking_get_services_xml()
+function social_bookmarking_get_services_json()
 {
-    static $xml = null;
-    if (!$xml) {
+    static $json = null;
+    if (!$json) {
         $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
         if (!empty($file)) {
-            $xml = new SimpleXMLElement($file);
+            $json = json_decode($file, true);
         }
     }
-    return $xml;
+    return $json;
 }
 
 function social_bookmarking_get_services()
@@ -54,16 +54,16 @@ function social_bookmarking_get_services()
     static $services = null;
     $booleanFilter = new Omeka_Filter_Boolean;
     if (!$services) {
-        $xml = social_bookmarking_get_services_xml();
+        $json = social_bookmarking_get_services_json();
         $services = array();
-        if (!empty($xml)) {
-            foreach ($xml->data->services->service as $service) {
-                $serviceCode = (string)$service->code;
+        if (!empty($json['data'])) {
+            foreach ($json['data'] as $service) {
+                $serviceCode = $service['code'];
                 $services[$serviceCode] = array(
                     'code' => $serviceCode,
-                    'name' => (string)$service->name,
-                    'icon' => (string)$service->icon32,
-                    'script_only' => $booleanFilter->filter((string)$service->script_only),
+                    'name' => $service['name'],
+                    'icon' => $service['icon32'],
+                    'script_only' => $booleanFilter->filter($service['script_only']),
                 );
             }
         }

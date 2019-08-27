@@ -14,7 +14,7 @@ require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
  */
 class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 {
-    const ADDTHIS_SERVICES_URL = 'http://cache.addthiscdn.com/services/v1/sharing.en.xml';
+    const ADDTHIS_SERVICES_URL = 'https://cache.addthiscdn.com/services/v1/sharing.en.json';
     const SERVICE_SETTINGS_OPTION = 'social_bookmarking_services';
     const ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
     const ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
