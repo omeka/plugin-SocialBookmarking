@@ -14,7 +14,6 @@ require_once dirname(__FILE__) . '/helpers/SocialBookmarkingFunctions.php';
  */
 class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 {
-    const ADDTHIS_SERVICES_URL = 'https://cache.addthiscdn.com/services/v1/sharing.en.json';
     const SERVICE_SETTINGS_OPTION = 'social_bookmarking_services';
     const ADD_TO_OMEKA_ITEMS_OPTION = 'social_bookmarking_add_to_omeka_items';
     const ADD_TO_OMEKA_COLLECTIONS_OPTION = 'social_bookmarking_add_to_omeka_collections';
@@ -29,7 +28,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         'initialize',
         'config_form',
         'config',
-        'admin_head',
+        'public_head',
         'public_items_show',
         'public_collections_show'
     );
@@ -67,15 +66,17 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
      */
     public function hookUpgrade($args)
     {
-        $booleanFilter = new Omeka_Filter_Boolean;
-        $newServiceSettings = social_bookmarking_get_default_service_settings();
-        $oldServiceSettings = social_bookmarking_get_service_settings();
-        foreach($newServiceSettings as $serviceCode => $value) {
-            if (array_key_exists($serviceCode, $oldServiceSettings)) {
-                $newServiceSettings[$serviceCode] = $booleanFilter->filter($oldServiceSettings[$serviceCode]);
+        if (version_compare($args['old_version'], '2.1', '<')) {
+            $booleanFilter = new Omeka_Filter_Boolean;
+            $newServiceSettings = social_bookmarking_get_default_service_settings();
+            $oldServiceSettings = social_bookmarking_get_service_settings();
+            foreach($newServiceSettings as $serviceCode => $value) {
+                if (array_key_exists($serviceCode, $oldServiceSettings)) {
+                    $newServiceSettings[$serviceCode] = $booleanFilter->filter($oldServiceSettings[$serviceCode]);
+                }
             }
+            social_bookmarking_set_service_settings($newServiceSettings);
         }
-        social_bookmarking_set_service_settings($newServiceSettings);
     }
 
     /**
@@ -86,12 +87,10 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         add_translation_source(dirname(__FILE__) . '/languages');
     }
 
-    public function hookAdminHead()
+    public function hookPublicHead()
     {
-        $request = Zend_Controller_Front::getInstance()->getRequest();
-        if ($request->getModuleName() == 'default' && $request->getControllerName() == 'plugins' && $request->getActionName() == 'config' && $request->getParam('name') == 'SocialBookmarking'){
-            queue_css_url('http://cache.addthiscdn.com/icons/v1/sprites/services.css');
-    }   }
+        queue_css_file('social-bookmarking');
+    }
 
     /**
      * Display the plugin config form.

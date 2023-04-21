@@ -8,9 +8,7 @@
 
 function social_bookmarking_get_service_settings()
 {
-    $serviceSettings = unserialize(get_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION));
-    ksort($serviceSettings);
-    return $serviceSettings;
+    return unserialize(get_option(SocialBookmarkingPlugin::SERVICE_SETTINGS_OPTION));
 }
 
 function social_bookmarking_set_service_settings($serviceSettings)
@@ -20,85 +18,47 @@ function social_bookmarking_set_service_settings($serviceSettings)
 
 function social_bookmarking_get_default_service_settings()
 {
-    $services =  social_bookmarking_get_services();
-    $serviceSettings = array();
-    $defaultEnabledServiceCodes = array(
-        'facebook',
-        'twitter',
-        'linkedin',
-        'pinterest_share',
-        'email',
-        'google_plusone_share',
-        'delicious',
+    $serviceSettings = array(
+        'facebook' => 1,
+        'twitter' => 1,
+        'tumblr' => 1,
+        'pinterest_share' => 1,
+        'email' => 1,
     );
-    foreach($services as $serviceCode => $serviceInfo) {
-        $serviceSettings[$serviceCode] = in_array($serviceCode, $defaultEnabledServiceCodes);
-    }
     return $serviceSettings;
-}
-
-function social_bookmarking_get_services_json()
-{
-    static $json = null;
-    if (!$json) {
-        $file = file_get_contents(SocialBookmarkingPlugin::ADDTHIS_SERVICES_URL);
-        if (!empty($file)) {
-            $json = json_decode($file, true);
-        }
-    }
-    return $json;
-}
-
-function social_bookmarking_get_services()
-{
-    static $services = null;
-    $booleanFilter = new Omeka_Filter_Boolean;
-    if (!$services) {
-        $json = social_bookmarking_get_services_json();
-        $services = array();
-        if (!empty($json['data'])) {
-            foreach ($json['data'] as $service) {
-                $serviceCode = $service['code'];
-                $services[$serviceCode] = array(
-                    'code' => $serviceCode,
-                    'name' => $service['name'],
-                    'icon' => $service['icon32'],
-                    'script_only' => $booleanFilter->filter($service['script_only']),
-                );
-            }
-        }
-    }
-    return $services;
-}
-
-function social_bookmarking_get_service($serviceCode)
-{
-    $services = social_bookmarking_get_services();
-    if (array_key_exists($serviceCode, $services)) {
-        return $services[$serviceCode];
-    }
-    return null;
 }
 
 function social_bookmarking_toolbar($url, $title, $description='')
 {
+    $services = social_bookmarking_get_service_settings();
     $html = '';
-    $html .= '<!-- AddThis Button BEGIN -->';
-    $html .= '<div class="addthis_toolbox addthis_default_style addthis_32x32_style"';
-    $html .= ' addthis:url="' . html_escape($url) . '" addthis:title="' . html_escape($title) . '" addthis:description="' . html_escape($description) . '">';
-    $services = social_bookmarking_get_services();
-    $serviceSettings = social_bookmarking_get_service_settings();
-    $booleanFilter = new Omeka_Filter_Boolean;
-    foreach ($serviceSettings as $serviceCode => $value) {
-        if ($booleanFilter->filter($value) && array_key_exists($serviceCode, $services)) {
-            $html .= '<a class="addthis_button_' . html_escape($serviceCode) . '"></a>';
-        }
+
+    $linkFormat = '<a href="%s?%s" class="socialbookmarking-link %s"><span class="icon" aria-hidden="true"></span>%s</a>';
+
+    if (!empty($services['facebook'])) {
+        $query = http_build_query(array('u' => $url), '', '&', PHP_QUERY_RFC3986);
+        $html .= sprintf($linkFormat, 'https://www.facebook.com/sharer.php', html_escape($query), 'facebook', __('Facebook'));
     }
-    $html .= '<a class="addthis_button_compact"></a>';
-    //$html .= '<a class="addthis_counter addthis_bubble_style"></a>';
-    $html .= '</div>';
-    $html .= '<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js"></script>';
-    $html .= '<!-- AddThis Button END -->';
+    if (!empty($services['twitter'])) {
+        $query = http_build_query(array('url' => $url), '', '&', PHP_QUERY_RFC3986);
+        $html .= sprintf($linkFormat, 'https://twitter.com/share', html_escape($query), 'twitter', __('Twitter'));
+    }
+    if (!empty($services['tumblr'])) {
+        $query = http_build_query(array('url' => $url), '', '&', PHP_QUERY_RFC3986);
+        $html .= sprintf($linkFormat, 'https://tumblr.com/share/link', html_escape($query), 'tumblr', __('Tumblr'));
+    }
+    if (!empty($services['pinterest_share'])) {
+        $query = http_build_query(array('url' => $url), '', '&', PHP_QUERY_RFC3986);
+        $html .= sprintf($linkFormat, 'https://pinterest.com/pin/create/bookmarklet', html_escape($query), 'pinterest', __('Pinterest'));
+    }
+    if (!empty($services['email'])) {
+        $query = http_build_query(array('subject' => $title, 'body' => $url), '', '&', PHP_QUERY_RFC3986);
+        $html .= sprintf($linkFormat, 'mailto:', html_escape($query), 'email', __('Email'));
+    }
+
+    if ($html) {
+        $html = '<div class="socialbookmarking-links">'. $html . '</div>';
+    }
 
     return $html;
 }

@@ -37,9 +37,9 @@
         <div class="inputs five columns omega">
         <ul style="list-style-type:none" class="details">
         <?php
-            $services = social_bookmarking_get_services();
+            $services = array('facebook' => __('Facebook'), 'twitter' => __('Twitter'), 'tumblr' => __('Tumblr'), 'pinterest_share' => __('Pinterest'), 'email' => __('Email'));
             $serviceSettings = social_bookmarking_get_service_settings();
-            foreach($services as $serviceCode => $serviceInfo):
+            foreach($services as $serviceCode => $serviceName):
                 if (array_key_exists($serviceCode, $serviceSettings)) {
                     $value = $serviceSettings[$serviceCode];
                 } else {
@@ -47,10 +47,10 @@
                 }
         ?>
             <li>
+            <label>
             <?php echo get_view()->formCheckbox($serviceCode, true, array('checked'=>(boolean)$value)); ?>
-            <span style="display:inline" class="addthis_service_icon icon_<?php echo html_escape($serviceCode); ?>"></span>
-            &nbsp;
-            <?php echo html_escape($serviceInfo['name']); ?>
+            <?php echo html_escape($serviceName); ?>
+            </label>
             </li>
         <?php endforeach; ?>
             </ul>
