@@ -1,0 +1,44 @@
+/*!
+ * Font Awesome Free 5.9.0 by @fontawesome - https://fontawesome.com
+ * License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License)
+ */
+@font-face{font-family:"Font Awesome 5 Brands";font-style:normal;font-weight:normal;font-display:auto;src:url(../../../../../application/views/scripts/css/iconfonts/fa-brands-400.eot);src:url(../../../../../application/views/scripts/css/iconfonts/fa-brands-400.eot?#iefix) format("embedded-opentype"),url(/../../../../../application/views/scripts/css/iconfonts/fa-brands-400.woff2) format("woff2"),url(../../../../../application/views/scripts/css/iconfonts/fa-brands-400.woff) format("woff"),url(../../../../../application/views/scripts/css/iconfonts/fa-brands-400.ttf) format("truetype"),url(../../../../../application/views/scripts/css/iconfonts/fa-brands-400.svg#fontawesome) format("svg")}.fab{font-family:"Font Awesome 5 Brands"}
+
+.socialbookmarking-links {
+    margin: 1.5em 0;
+}
+
+.socialbookmarking-link {
+    margin-right: 1em;
+}
+
+.socialbookmarking-link span.icon::before {
+    display: inline-block;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Font Awesome 5 Brands";
+    font-weight: normal;
+    margin-right: 0.2em;
+}
+
+.socialbookmarking-link.facebook span.icon::before {
+    content: '\f09a';
+}
+
+.socialbookmarking-link.twitter span.icon::before {
+    content: '\f099';
+}
+
+.socialbookmarking-link.tumblr span.icon::before {
+    content: '\f173';
+}
+
+.socialbookmarking-link.pinterest span.icon::before {
+    content: '\f0d2';
+}
+
+.socialbookmarking-link.email span.icon::before {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    content: '\f0e0';
+}
