@@ -89,6 +89,7 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
 
     public function hookPublicHead()
     {
+        queue_css_file('iconfonts');
         queue_css_file('social-bookmarking');
     }
 
