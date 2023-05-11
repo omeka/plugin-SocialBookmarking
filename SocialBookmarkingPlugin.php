@@ -141,8 +141,8 @@ class SocialBookmarkingPlugin extends Omeka_Plugin_AbstractPlugin
         if (get_option(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION) == '1') {
             $collection = get_current_record('collection');
             $url = record_url($collection, 'show', true);
-            $title = strip_formatting(metadata($item, array('Dublin Core', 'Title'), array('no_escape' => true)));
-            $description = strip_formatting(metadata($item, array('Dublin Core', 'Description'), array('no_escape' => true)));
+            $title = strip_formatting(metadata($collection, array('Dublin Core', 'Title'), array('no_escape' => true)));
+            $description = strip_formatting(metadata($collection, array('Dublin Core', 'Description'), array('no_escape' => true)));
             echo social_bookmarking_toolbar($url, $title, $description);
         }
     }
