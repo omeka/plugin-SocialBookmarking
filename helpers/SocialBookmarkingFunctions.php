@@ -22,7 +22,6 @@ function social_bookmarking_get_default_service_settings()
         'facebook' => 1,
         'twitter' => 1,
         'tumblr' => 1,
-        'pinterest_share' => 1,
         'email' => 1,
     );
     return $serviceSettings;
@@ -46,10 +45,6 @@ function social_bookmarking_toolbar($url, $title, $description='')
     if (!empty($services['tumblr'])) {
         $query = http_build_query(array('url' => $url), '', '&', PHP_QUERY_RFC3986);
         $html .= sprintf($linkFormat, 'https://tumblr.com/share/link', html_escape($query), 'tumblr', __('Tumblr'));
-    }
-    if (!empty($services['pinterest_share'])) {
-        $query = http_build_query(array('url' => $url), '', '&', PHP_QUERY_RFC3986);
-        $html .= sprintf($linkFormat, 'https://pinterest.com/pin/create/bookmarklet', html_escape($query), 'pinterest', __('Pinterest'));
     }
     if (!empty($services['email'])) {
         $query = http_build_query(array('subject' => $title, 'body' => $url), '', '&', PHP_QUERY_RFC3986);

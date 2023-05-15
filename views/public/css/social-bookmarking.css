@@ -33,10 +33,6 @@
     content: '\f173';
 }
 
-.socialbookmarking-link.pinterest span.icon::before {
-    content: '\f0d2';
-}
-
 .socialbookmarking-link.email span.icon::before {
     font-family: 'Font Awesome 5 Free';
     font-weight: 900;

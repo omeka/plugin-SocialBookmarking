@@ -37,7 +37,7 @@
         <div class="inputs five columns omega">
         <ul style="list-style-type:none" class="details">
         <?php
-            $services = array('facebook' => __('Facebook'), 'twitter' => __('Twitter'), 'tumblr' => __('Tumblr'), 'pinterest_share' => __('Pinterest'), 'email' => __('Email'));
+            $services = array('facebook' => __('Facebook'), 'twitter' => __('Twitter'), 'tumblr' => __('Tumblr'), 'email' => __('Email'));
             $serviceSettings = social_bookmarking_get_service_settings();
             foreach($services as $serviceCode => $serviceName):
                 if (array_key_exists($serviceCode, $serviceSettings)) {
