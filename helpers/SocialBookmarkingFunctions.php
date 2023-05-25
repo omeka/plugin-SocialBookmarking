@@ -32,7 +32,7 @@ function social_bookmarking_toolbar($url, $title, $description='')
     $services = social_bookmarking_get_service_settings();
     $html = '';
 
-    $linkFormat = '<a href="%s?%s" class="socialbookmarking-link %s"><span class="icon" aria-hidden="true"></span>%s</a>';
+    $linkFormat = '<a href="%s?%s" class="socialbookmarking-link %s" target="_blank"><span class="icon" aria-hidden="true"></span>%s</a>';
 
     if (!empty($services['facebook'])) {
         $query = http_build_query(array('u' => $url), '', '&', PHP_QUERY_RFC3986);
