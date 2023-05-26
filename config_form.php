@@ -1,11 +1,11 @@
 <div id="socialBookmarkingServiceSettings">
     <div class="field">
         <div class="two columns alpha">
-            <?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, 'Add to Items'); ?>
+            <?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION, __('Add to Items')); ?>
         </div>
         <div class="inputs five columns omega">
             <p class="explanation"><?php echo __(
-                'If checked, this plugin will add a social bookmarking toolbar at the bottom of every public item show page.'
+                'Add social bookmarking links at the bottom of public item show pages.'
             ); ?></p>
             <?php echo get_view()->formCheckbox(
                 SocialBookmarkingPlugin::ADD_TO_OMEKA_ITEMS_OPTION,
@@ -16,11 +16,11 @@
 
     <div class="field">
         <div class="two columns alpha">
-            <?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, 'Add to Collections'); ?>
+            <?php echo get_view()->formLabel(SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION, __('Add to Collections')); ?>
         </div>
         <div class="inputs five columns omega">
             <p class="explanation"><?php echo __(
-                'If checked, this plugin will add a social bookmarking toolbar at the bottom of every public collection show page.'
+                'Add social bookmarking links at the bottom of public collection show pages.'
             ); ?></p>
             <?php echo get_view()->formCheckbox(
                 SocialBookmarkingPlugin::ADD_TO_OMEKA_COLLECTIONS_OPTION,
@@ -30,13 +30,14 @@
     </div>
 
     <div class="field">
+        <fieldset>
         <div class="two columns alpha">
-            <p><?php echo __('Choose which social bookmarking services you would like to use on your site.'); ?></p>
+            <legend style="line-height: 1.5"><?php echo __('Services'); ?></legend>
         </div>
 
         <div class="inputs five columns omega">
-        <ul style="list-style-type:none" class="details">
-        <?php
+            <p class="explanation"><?php echo __('Choose which social bookmarking services to show.'); ?></p>
+            <?php
             $services = array('facebook' => __('Facebook'), 'twitter' => __('Twitter'), 'tumblr' => __('Tumblr'), 'email' => __('Email'));
             $serviceSettings = social_bookmarking_get_service_settings();
             foreach($services as $serviceCode => $serviceName):
@@ -45,15 +46,12 @@
                 } else {
                     $value = false;
                 }
-        ?>
-            <li>
+            ?>
             <label>
             <?php echo get_view()->formCheckbox($serviceCode, true, array('checked'=>(boolean)$value)); ?>
             <?php echo html_escape($serviceName); ?>
             </label>
-            </li>
-        <?php endforeach; ?>
-            </ul>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>
